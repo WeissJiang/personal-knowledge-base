@@ -77,6 +77,6 @@ A CMS, short for content management system, is a software application that allow
 
 ### What is Nextjs? 
 
-AAA
+Next.js is a React-based web framework that provides several features to help you build server-rendered React applications.
 
 **[⬆ Back to Top](#table-of-contents)**
