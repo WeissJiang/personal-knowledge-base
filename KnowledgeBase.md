@@ -4,12 +4,10 @@
 | No. | Questions |
 | --- | --------- |  
 | 1   | [What is SCSS](#what-is-scss)  |
-| *   | [What is .NET Core](#what-is-net-core)  |
 | *   | [What is Entity Framework Core](#what-is-entity-framework-core)  |
 | *   | [What is CMS](#what-is-sitecore)  |
 | *   | [What is Nextjs](#what-is-nextjs)  |
-| *   | [Bundle and minify static assets in ASP.NET Core](#bundle-and-minify-static-assets-in-aspnet-core)
-| *   | [What is IIS Express](#what-is-iis-express)  |
+| *   | [Bundle and minify static assets in ASP.NET Core](#bundle-and-minify-static-assets-in-aspnet-core)  |
 | *   | [What is ASP.NET MVC](#what-is-aspnet-mvc)  |
 
 
@@ -66,9 +64,180 @@ Doing math in your CSS is very helpful. Sass has a handful of standard math oper
 
 **[⬆ Back to Top](#table-of-contents)**
 
-### What is .NET Core?
-
 ### What is Entity Framework Core? 
+
+Entity Framework Core (EF Core) is an open-source object-relational mapping (ORM) framework developed by Microsoft. It is a lightweight and cross-platform version of Entity Framework (EF). EF Core is designed to work with .NET Core.
+
+#### Main Components
+
+`DbContext`: Represents the database session and provides a way to query and interact with the database.
+
+`DbSet`: Represents a collection of entities in the database.
+
+`Entity Classes`: POCO (Plain Old CLR Objects) classes that map to database tables.
+
+`Configuration`: Fluent API or Data Annotations to configure entity properties and relationships.
+
+`Migrations`: Used for creating and applying database schema changes.
+
+`LINQ (Language Integrated Query)`: Used for querying data in a type-safe manner.
+
+#### Configuration - Data Annotations
+
+````
+// Column Attribute
+public class Book
+{
+    public int BookId { get; set; }
+    [Column("Description", Order = 2, TypeName = "nvarchar(100)")]
+    public string Title { get; set; }
+    public Author Author { get; set; }
+}
+
+// ConcurrencyCheck Attribute
+public class YourEntity
+{
+    public int Id { get; set; }
+
+    [ConcurrencyCheck]
+    public string Name { get; set; }
+}
+
+// DatabaseGenerated Attribute
+public class Contact
+{
+    public int Id { get; set; }
+    public string FullName { get; set; }
+    public string Email { get; set; } 
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LastAccessed { get; set; }
+}
+
+````
+
+#### Configuration - Fluent API
+
+````
+public class SampleContext : DbContext
+{
+    // Specify DbSet properties etc
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // add your own configuration here
+    }
+}
+````
+
+#### Inheritance
+1. Table Per Concrete (TPC)
+在 TPC 策略中，每个具体类（即非抽象类）都映射到自己的表中。这意味着每个派生类的表都将包含基类的字段以及派生类特有的字段，但不会存在表之间的外键关系。
+优点:
+没有冗余或空列，每个表只包含它所代表的类的字段。
+避免了多表连接，可能提高查询性能。
+缺点:
+数据重复（基类的字段在每个表中都会重复）。
+更新继承层次结构的基类属性时，可能需要更新多个表。
+
+2. Table Per Hierarchy (TPH) - Default inheritance
+TPH 是 Entity Framework Core 中默认的继承映射策略。在这种策略下，一个继承层次结构（一个基类和它的所有派生类）被映射到单个数据库表中。这个表包含了所有类的字段，加上一个“Discriminator”列，用于区分不同的派生类型。
+优点:
+查询性能通常较好，因为所有数据都在一个表中。
+模型的变化不需要复杂的数据库架构更改。
+缺点:
+表可能包含很多空列（对于某些派生类型不适用的属性）。
+所有类共享一个表，可能会导致表过大。
+
+3. Table Per Type (TPT)
+在 TPT 策略中，每个类（基类和每个派生类）都映射到它自己的表中。派生类的表包含了派生类特有的字段，以及一个外键列，该列指向基类表的主键。
+优点:
+数据库模式更加归一化，没有多余的空列。
+可以更灵活地处理数据和权限。
+缺点:
+查询性能可能较差，特别是涉及多个继承层次的查询，因为它们需要多表连接。
+数据模型的变化可能需要更复杂的数据库变更。
+
+#### Load Related Data - Lazy Loading
+````
+// 导航属性必须是 virtual: 这允许 Entity Framework Core 创建派生的代理实体，这些代理可以在访问导航属性时插入加载逻辑。
+public class Blog
+{
+    public int BlogId { get; set; }
+    public string Url { get; set; }
+    public virtual ICollection<Post> Posts { get; set; }
+}
+
+public class Post
+{
+    public int PostId { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+    public int BlogId { get; set; }
+    public virtual Blog Blog { get; set; }
+}
+
+// 在上面的模型中，Posts 集合和 Blog 导航属性被标记为 virtual。接下来，确保你的 DbContext 启用了代理的延迟加载：
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder
+        .UseLazyLoadingProxies()
+        .UseSqlServer(myConnectionString);
+}
+
+// 当以上条件都满足时，延迟加载就可以工作了。现在，当你加载一个 Blog 实体但未明确加载其 Posts 集合时，这个集合在你第一次尝试访问它时将自动从数据库中加载：
+var blog = context.Blogs.First(); // 此时不加载Posts
+var postCount = blog.Posts.Count; // 此时自动从数据库加载Posts，没有 virtual 关键字，你就不会有延迟加载的功能，但你仍然可以通过其他方式加载相关数据，而且访问 .Count 会返回实际加载到集合中的元素数量，这通常默认情况下是 0。
+````
+
+
+#### Load Related Data - Eager Loading
+````
+// 当你使用 Eager Loading（立即加载）时，你是在一次数据库查询中同时加载主实体和其相关的实体。这意味着，一旦数据被检索，相关的实体将驻留在内存中，除非你的上下文被释放或实体被显式地从上下文中移除。这不是说它们“一直存在”，而是说在当前的数据上下文生命周期内，这些相关实体已经被加载并可用，你不需要再次从数据库中检索它们。
+var blogs = context.Blogs
+    .Include(blog => blog.Posts)
+    .ToList();
+````
+
+#### Load Related Data - Explicit Loading
+````
+// 而对于 Explicit Loading（显式加载），事情略有不同。这种情况下，主实体首先被加载，而相关实体则是在需要的时候通过单独的查询被显式加载。就像 Eager Loading 一样，一旦这些实体被加载，它们就会在当前的数据上下文生命周期内保持在内存中。但是，与 Eager Loading 不同的是，你可以更灵活地决定何时加载这些相关实体，而不是在最初的查询中自动加载它们。
+var blog = context.Blogs
+    .Single(b => b.BlogId == 1);
+
+context.Entry(blog)
+    .Collection(b => b.Posts)
+    .Load();
+````
+
+#### LINQ In Querying Data
+
+Entity Framework Core uses Language-Integrated Query (LINQ) to query data from the database. LINQ allows you to use C# (or your .NET language of choice) to write strongly typed queries. It uses your derived context and entity classes to reference database objects.
+
+````
+// Loading all data
+using (var context = new BloggingContext())
+{
+    var blogs = context.Blogs.ToList();
+}
+
+// Loading a single entity
+using (var context = new BloggingContext())
+{
+    var blog = context.Blogs
+        .Single(b => b.BlogId == 1);
+}
+
+// Filtering
+using (var context = new BloggingContext())
+{
+    var blogs = context.Blogs
+        .Where(b => b.Url.Contains("dotnet"))
+        .ToList();
+}
+````
+
+**[More Details](https://www.learnentityframeworkcore.com/)**
+
+**[⬆ Back to Top](#table-of-contents)**
 
 ### What is CMS? 
 A CMS, short for content management system, is a software application that allows users to build and manage a website without having to code it from scratch, or know how to code at all.
@@ -165,9 +334,5 @@ You can change your environment from Development to Production using the project
 因此，一般来说，你会选择其中一种方法来实现你的需求。如果你在ASP.NET Core环境中工作，推荐使用 `asp-append-version="true"`。
 
 **[⬆ Back to Top](#table-of-contents)**
-
-### What is IIS Express
-
-
 
 ### What is ASP.NET MVC
