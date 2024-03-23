@@ -6,10 +6,12 @@
 | 1   | [What is SCSS](#what-is-scss)  |
 | *   | [What is .NET Core](#what-is-net-core)  |
 | *   | [What is Entity Framework Core](#what-is-entity-framework-core)  |
-| *   | [What is CMS](#what-is-sitecore )  |
-| *   | [What is Nextjs](#what-is-nextjs )  |
+| *   | [What is CMS](#what-is-sitecore)  |
+| *   | [What is Nextjs](#what-is-nextjs)  |
 | *   | [Bundle and minify static assets in ASP.NET Core](#bundle-and-minify-static-assets-in-aspnet-core)
-| *   | [What is ASP.NET MVC 5](#what-is-aspnet-mvc-5 )  |
+| *   | [What is IIS Express](#what-is-iis-express)  |
+| *   | [What is ASP.NET MVC](#what-is-aspnet-mvc)  |
+
 
 ### What is SCSS?
 
@@ -128,6 +130,44 @@ Bundling and minification primarily improve the **first page request** load time
 
 #### Environment-based Bundling and Minification
 
+The Environment Tag Helper only renders its contents when the application is running in specific environments. The following code snippet shows how to use environment tag helper to render non-bundled files in the Development environment and bundled files when the environment is not Development such as Production or Staging.
+
+![bundline-and-minification-environment-tag](images/bundling-and-minification-5.png)
+
+You can change your environment from Development to Production using the project properties dialog as shown in the following screenshot.
+
+![bundline-and-minification-set-environment](images/bundling-and-minification-6.png)
 
 
-### What is ASP.NET MVC 5
+**[More Details](https://www.ezzylearning.net/tutorial/a-step-by-step-guide-to-bundling-and-minification-in-asp-net-core)**
+
+
+#### Cache busting
+
+![bundline-and-minification-caching-busting](images/bundling-and-minification-4.png)
+
+`v=@GetHashCodeAsString()`
+
+`v=@GetHashCodeAsString()` 是一种在资源链接后添加一个查询字符串的方法，这里 GetHashCodeAsString() 应该是一个方法调用，可能是自定义的，用于生成一个哈希值或版本号。当浏览器请求带有查询参数的资源时，如果查询字符串改变了，浏览器会认为这是一个全新的资源，从而去服务器上重新下载它，而不是从缓存中加载。
+
+`asp-append-version="true`
+
+`asp-append-version="true"` 是一个ASP.NET Core的特定属性，它自动为静态文件的URL添加一个唯一的版本号，这个版本号是该文件内容的哈希值。当文件内容改变时，哈希值会随之改变，导致生成的URL改变，这样浏览器就会加载新版本的文件，而不是从缓存中加载旧版本。
+
+使用 asp-append-version="true" 时，ASP.NET Core 会自动处理版本字符串的生成和添加，你不需要手动指定版本号。
+
+**结合使用**
+通常，`v=@GetHashCodeAsString()` 和 `asp-append-version="true"` 不需要一起使用。它们都是解决同一问题（缓存破坏）的不同方法：
+
+如果你在使用ASP.NET Core，`asp-append-version="true"` 是一个简单且自动的方式来确保你的静态文件如CSS和JavaScript被正确地缓存破坏。
+`v=@GetHashCodeAsString()` 这种方法更为手动，通常用在没有自动化机制的环境中，或者你需要特定的缓存控制逻辑时。
+
+因此，一般来说，你会选择其中一种方法来实现你的需求。如果你在ASP.NET Core环境中工作，推荐使用 `asp-append-version="true"`。
+
+**[⬆ Back to Top](#table-of-contents)**
+
+### What is IIS Express
+
+
+
+### What is ASP.NET MVC
