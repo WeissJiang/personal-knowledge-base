@@ -1,4 +1,4 @@
-# Umbraco Learning
+# CMS Learning
 
 ### Table of Contents
 | No. | Questions |
