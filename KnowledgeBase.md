@@ -3,12 +3,14 @@
 ### Table of Contents
 | No. | Questions |
 | --- | --------- |  
-| 1   | [What is SCSS](#what-is-scss)  |
+| *   | [What is SCSS](#what-is-scss)  |
 | *   | [What is Entity Framework Core](#what-is-entity-framework-core)  |
 | *   | [What is CMS](#what-is-sitecore)  |
 | *   | [What is Nextjs](#what-is-nextjs)  |
 | *   | [Bundle and minify static assets in ASP.NET Core](#bundle-and-minify-static-assets-in-aspnet-core)  |
 | *   | [What is ASP.NET MVC](#what-is-aspnet-mvc)  |
+| *   | [Common HTML Events](#common-html-events)  |
+| *   | [Content Delivery API](#content-delivert-api)  |
 
 
 ### What is SCSS?
@@ -336,3 +338,75 @@ You can change your environment from Development to Production using the project
 **[⬆ Back to Top](#table-of-contents)**
 
 ### What is ASP.NET MVC
+
+**[⬆ Back to Top](#table-of-contents)**
+
+### Common HTML Events
+
+鼠标事件
+- click: 用户点击元素时触发。
+- dblclick: 用户双击元素时触发。
+- mousedown: 用户按下鼠标按钮时触发。
+- mouseup: 用户释放鼠标按钮时触发。
+- mousemove: 鼠标在元素上移动时触发。
+    - 触发条件：当用户的鼠标指针在元素内部移动时，无论鼠标指针是否刚刚进入元素，mousemove 事件都会被触发。
+    - 触发频率：mousemove 是一种高频事件，只要鼠标在元素上移动，就会不断触发，可以说是鼠标在元素上每移动一点点，mousemove 事件就会触发一次。
+    - 使用场景：mousemove 事件通常用于跟踪鼠标的移动路径，或在用户移动鼠标时进行实时的视觉反馈。例如，在图形绘制、游戏、拖放界面或实时变化的视觉效果中经常使用mousemove事件。
+- mouseover: 鼠标移入元素边界内时触发。
+    - 触发条件：当用户的鼠标指针从元素外部移入元素内部时，mouseover 事件被触发。不同于mousemove，mouseover只在鼠标指针进入元素边界时触发一次。
+    - 触发频率：mouseover 事件触发的频率较低，只在鼠标指针进入新的元素边界时触发。
+    - 冒泡特性：mouseover 事件会冒泡。这意味着当鼠标指针移动到子元素上时，父元素也会触发mouseover事件，除非在事件处理函数中明确停止冒泡。
+    - 使用场景：mouseover 通常用于实现当鼠标指针移动到某个元素上时的交互效果，如工具提示显示、颜色改变、菜单展开等。
+- mouseout: 鼠标移出元素边界时触发。
+- mouseout: 鼠标移出元素边界时触发。
+- mouseout: 鼠标移出元素边界时触发。
+- mouseenter: 鼠标移入元素时触发（不冒泡）。
+- mouseleave: 鼠标移出元素时触发（不冒泡）。
+- contextmenu: 用户在元素上点击鼠标右键打开上下文菜单时触发。
+
+键盘事件
+- keydown: 用户按下键盘上的任意键时触发。
+- keyup: 用户释放键盘上的键时触发。
+- keypress: 用户按下键盘上的字符键时触发（已废弃，不推荐使用）。
+
+焦点事件
+- focus: 元素获得焦点时触发。
+- blur: 元素失去焦点时触发。
+- focusin: 元素或其子元素获得焦点时触发（会冒泡）。
+- focusout: 元素或其子元素失去焦点时触发（会冒泡）。
+
+触摸事件
+- touchstart: 用户触摸屏幕时触发。
+- touchmove: 用户在屏幕上滑动时触发。
+- touchend: 用户停止触摸屏幕时触发。
+- touchcancel: 触摸事件被打断时触发，例如电话呼入或弹出警告框。
+
+滚动事件
+- scroll: 元素或窗口滚动时触发。
+
+拖拽事件
+- dragstart: 用户开始拖动元素时触发。
+- drag: 元素被拖动时连续触发。
+- dragend: 拖动操作结束时触发。
+- dragenter: 拖动的元素进入有效放置目标时触发。
+- dragover: 元素被拖动到有效放置目标上时连续触发。
+- dragleave: 拖动的元素离开有效放置目标时触发。
+- drop: 元素被拖动到有效放置目标上并释放时触发。
+
+动画和过渡事件
+- animationstart: CSS动画开始时触发。
+- animationend: CSS动画结束时触发。
+- animationiteration: CSS动画重复时触发。
+- transitionend: CSS过渡效果完成时触发。
+
+**[⬆ Back to Top](#table-of-contents)**
+
+### Content Delivery API
+
+A Content Delivery API is a specific type of API designed to allow developers and applications to retrieve content from a Content Management System (CMS). This kind of API is particularly designed for use in "headless" or "decoupled" CMS architectures, where the CMS is used solely for storing and managing content, while the presentation and delivery of content are handled by other systems or front-end frameworks.
+
+In a headless architecture, the Content Delivery API plays a crucial role as it provides a standardized way to request and receive content. This enables front-end developers to use any technology or framework of their choice to build the user interface while relying on the structured content provided by the CMS through the API.
+
+**[tutorial-video](https://www.youtube.com/watch?v=moI4cIxKIMc)**
+
+**[⬆ Back to Top](#table-of-contents)**
